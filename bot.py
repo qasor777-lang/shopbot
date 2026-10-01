@@ -971,6 +971,17 @@ async def api_order(request):
     )
 
 
+async def _keepalive(url):
+    """Render kabi bepul hosting uxlab qolmasligi uchun o'zini 5 daqiqada ping qiladi."""
+    while True:
+        await asyncio.sleep(300)
+        try:
+            async with ClientSession(timeout=ClientTimeout(total=20)) as s:
+                await s.get(url)
+        except Exception:
+            pass
+
+
 async def start_api(shop_bot):
     app = web.Application(client_max_size=4 * 1024 * 1024)
     app["shop_bot"] = shop_bot
@@ -987,6 +998,8 @@ async def start_api(shop_bot):
         await web.TCPSite(runner, "0.0.0.0", API_PORT).start()
         print(f"🌐 Katalog API: http://localhost:{API_PORT}/api/products")
         print(f"🌐 Web shop: http://localhost:{API_PORT}/")
+        if PUBLIC_URL:
+            asyncio.create_task(_keepalive(PUBLIC_URL))
     except OSError:
         print(f"⚠️ {API_PORT}-port band — katalog API ishga tushmadi (.env: API_PORT)")
     return runner
