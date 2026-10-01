@@ -32,8 +32,14 @@ ADMIN_ID = int((os.getenv("ADMIN_ID", "0") or "0").strip() or 0)
 DB = str(Path(os.getenv("SHOP_DB_PATH", str(BASE / "shop.db"))).expanduser())
 Path(DB).parent.mkdir(parents=True, exist_ok=True)
 UPLOAD_DIR = Path(os.getenv("SHOP_UPLOAD_DIR", str(Path(DB).parent / "uploads"))).expanduser()
-WEBAPP_URL = os.getenv("WEBAPP_URL", "").strip()
-PUBLIC_URL = os.getenv("PUBLIC_URL", "").strip().rstrip("/")  # botning ochiq HTTPS manzili (katalog API uchun)
+def _env_url(name):
+    """env var'dan toza https URL qaytaradi — maydonda qatorlar aralashgan bo'lsa so'nggisini oladi."""
+    parts = [p.strip().rstrip("/") for p in os.getenv(name, "").split() if p.strip().startswith("https://")]
+    return parts[-1] if parts else ""
+
+
+WEBAPP_URL = _env_url("WEBAPP_URL")
+PUBLIC_URL = _env_url("PUBLIC_URL")  # botning ochiq HTTPS manzili (katalog API uchun)
 PLATFORM_PORT = os.getenv("PORT", "").strip()
 API_PORT = int(PLATFORM_PORT or os.getenv("API_PORT", "8080") or 8080)
 

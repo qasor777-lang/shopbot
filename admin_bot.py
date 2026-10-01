@@ -18,7 +18,7 @@ from aiogram.types import BotCommand, CallbackQuery, MenuButtonWebApp, WebAppInf
 from aiogram.types import InlineKeyboardButton as B
 from aiogram.types import InlineKeyboardMarkup, Message
 
-from bot import ADMIN_ID, CATS, STATUS, init_db, money, esc, run
+from bot import ADMIN_ID, CATS, PUBLIC_URL, STATUS, init_db, money, esc, run
 from bot import TOKEN as SHOP_TOKEN
 
 shop_bot = None  # do'kon boti (mijozlarga xabar yuborish uchun)
@@ -422,7 +422,7 @@ async def main():
         print("⚠️  ADMIN_ID yozilmagan: admin botga /start yozing, u sizning ID'ingizni aytadi, uni .env ga yozing.")
     await abot.delete_webhook(drop_pending_updates=True)
     await abot.set_my_commands([BotCommand(command="menu", description="Admin menyu"), BotCommand(command="cancel", description="Bekor qilish")])
-    pub = os.getenv("PUBLIC_URL", "").strip().rstrip("/")
+    pub = PUBLIC_URL
     if pub and ADMIN_ID:
         try:
             await abot.set_chat_menu_button(chat_id=ADMIN_ID, menu_button=MenuButtonWebApp(text="🛠 Admin panel", web_app=WebAppInfo(url=pub + "/admin")))
