@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <title>FreshMarket</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+         :root {
+            --g: #22d36b;
+            --card: #0d222b;
+            --line: #1b4150;
+            --t: #e8f3ee;
+            --m: #7f9aa3
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent
+        }
+        
+        body {
+            background: #050e13;
+            color: var(--t);
+            font: 14px/1.3 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif
+        }
+        
+        #app {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding: 0 14px 96px;
+            background: radial-gradient(120% 55% at 50% 0, #0c3330 0, #06131a 62%)
+        }
+        
+        .bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 0 12px;
+            font-size: 19px;
+            font-weight: 600
+        }
+        
+        .bar .bk {
+            background: none;
+            border: 0;
+            color: var(--t);
+            font-size: 22px
+        }
+        
+        .bar .sp {
+            flex: 1
+        }
+        
+        .logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #12361f;
+            border: 2px solid var(--g);
+            display: grid;
+            place-items: center
+        }
+        
+        .card {
+            background: linear-gradient(180deg, #10272f, #0b1d25);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            box-shadow: 0 0 18px #22d36b12
+        }
+        
+        .btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            border: 0;
+            border-radius: 14px;
+            padding: 15px 18px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #04210f;
+            background: linear-gradient(90deg, #1fc762, #33e47e);
+            box-shadow: 0 0 22px #22d36b44;
+            margin-top: 12px
+        }
+        
+        .btn.c {
+            justify-content: center
+        }
+        
+        .btn.d {
+            background: #12303a;
+            color: var(--t);
+            box-shadow: none
+        }
+        
+        .hero {
+            height: 200px;
+            border-radius: 18px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0c3a22, #17582f 55%, #0b2c2a);
+            border: 1px solid var(--line)
+        }
+        
+        .hero h2 {
+            position: absolute;
+            left: 16px;
+            top: 20px;
+            width: 62%;
+            font: italic 700 25px/1.15 "Segoe Script", "Brush Script MT", cursive;
+            color: #fff;
+            text-shadow: 0 2px 8px #000a
+        }
+        
+        .hero .em {
+            position: absolute;
+            right: -6px;
+            bottom: -8px;
+            font-size: 52px;
+            line-height: 1.05;
+            text-align: right;
+            width: 70%;
+            letter-spacing: -4px;
+            filter: drop-shadow(0 4px 6px #0008)
+        }
+        
+        .ft {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin: 10px 0
+        }
+        
+        .ft div {
+            text-align: center;
+            font-size: 11px;
+            padding: 10px 4px;
+            border-radius: 12px;
+            background: #0d222b;
+            border: 1px solid var(--line)
+        }
+        
+        .ft b {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 4px
+        }
+        
+        .wl {
+            padding: 14px;
+            margin: 10px 0;
+            line-height: 1.45
+        }
+        
+        .wl b {
+            color: var(--g)
+        }
+        
+        .sr {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 14px;
+            margin-top: 12px
+        }
+        
+        .sr input {
+            flex: 1;
+            background: none;
+            border: 0;
+            outline: 0;
+            color: var(--t);
+            font-size: 15px
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+        
+        .cat {
+            padding: 0 0 10px;
+            overflow: hidden
+        }
+        
+        .cat .im {
+            height: 92px;
+            display: grid;
+            place-items: center;
+            font-size: 54px;
+            background: radial-gradient(circle, #1d4a3a, #0b1d25)
+        }
+        
+        .cat b {
+            display: block;
+            margin: 8px 12px 0
+        }
+        
+        .cat small {
+            margin: 0 12px;
+            color: var(--m)
+        }
+        
+        .chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 0 12px
+        }
+        
+        .chips::-webkit-scrollbar {
+            display: none
+        }
+        
+        .chip {
+            flex: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #102a33;
+            border: 1px solid var(--line);
+            color: var(--t);
+            font-size: 13px
+        }
+        
+        .chip.on {
+            background: var(--g);
+            color: #04210f;
+            font-weight: 700
+        }
+        
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            margin-bottom: 10px
+        }
+        
+        .pic {
+            width: 62px;
+            height: 62px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 38px;
+            background: radial-gradient(circle, #1d4a3a, #0b1d25);
+            flex: none
+        }
+        
+        .inf {
+            flex: 1
+        }
+        
+        .inf b {
+            display: block;
+            font-size: 15px
+        }
+        
+        .inf small {
+            color: var(--m);
+            display: block;
+            margin: 3px 0
+        }
+        
+        .inf span {
+            font-weight: 600
+        }
+        
+        .add {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            background: var(--g);
+            color: #04210f;
+            border: 0;
+            font-size: 24px;
+            font-weight: 700;
+            position: relative;
+            flex: none
+        }
+        
+        .add i {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            background: #fff;
+            color: #04210f;
+            border-radius: 10px;
+            font: 700 11px/16px system-ui;
+            min-width: 18px;
+            text-align: center
+        }
+        
+        .fv {
+            background: none;
+            border: 0;
+            font-size: 18px
+        }
+        
+        .st {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            overflow: hidden
+        }
+        
+        .st button {
+            width: 30px;
+            height: 30px;
+            background: #12303a;
+            border: 0;
+            color: var(--t);
+            font-size: 17px
+        }
+        
+        .st span {
+            width: 30px;
+            text-align: center
+        }
+        
+        .tot {
+            display: flex;
+            justify-content: space-between;
+            padding: 18px 4px 0;
+            font-size: 17px
+        }
+        
+        .tot b {
+            color: var(--g);
+            font-size: 20px
+        }
+        
+        .opt {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 14px;
+            border-bottom: 1px solid #15303a
+        }
+        
+        .opt:last-child {
+            border: 0
+        }
+        
+        .rd {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #4c6670;
+            display: grid;
+            place-items: center
+        }
+        
+        .opt.on .rd {
+            border-color: var(--g)
+        }
+        
+        .opt.on .rd:after {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--g)
+        }
+        
+        .h3 {
+            margin: 16px 2px 8px;
+            font-weight: 600;
+            font-size: 15px
+        }
+        
+        .inp {
+            width: 100%;
+            background: none;
+            border: 0;
+            outline: 0;
+            color: var(--t);
+            font-size: 15px;
+            padding: 14px
+        }
+        
+        .addr-search {
+            position: relative
+        }
+        
+        .addr-results {
+            position: absolute;
+            z-index: 20;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            display: none;
+            max-height: 230px;
+            overflow-y: auto;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--card);
+            box-shadow: 0 10px 28px #0008
+        }
+        
+        .addr-results.open {
+            display: block
+        }
+        
+        .addr-results button,
+        .addr-results .addr-empty {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: 0;
+            border-bottom: 1px solid var(--line);
+            background: none;
+            color: var(--t);
+            text-align: left;
+            font: inherit
+        }
+        
+        .addr-results button:last-child {
+            border-bottom: 0
+        }
+        
+        .address-credit {
+            display: block;
+            margin: 5px 2px 0;
+            color: var(--m);
+            font-size: 11px
+        }
+        
+        .address-credit a {
+            color: inherit
+        }
+        
+        .pf {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            padding: 14px
+        }
+        
+        .av {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid var(--g);
+            display: grid;
+            place-items: center;
+            font-size: 34px;
+            background: #0f3a24
+        }
+        
+        .prem {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            background: #12343f;
+            color: #6cf;
+            font-size: 12px
+        }
+        
+        .sts {
+            display: flex;
+            text-align: center;
+            padding: 12px 0;
+            margin-top: 10px
+        }
+        
+        .sts div {
+            flex: 1;
+            border-right: 1px solid var(--line)
+        }
+        
+        .sts div:last-child {
+            border: 0
+        }
+        
+        .sts b {
+            display: block;
+            font-size: 20px
+        }
+        
+        .sts small {
+            color: var(--m)
+        }
+        
+        .mi {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px;
+            border-bottom: 1px solid #15303a
+        }
+        
+        .mi:last-child {
+            border: 0
+        }
+        
+        .mi .a {
+            margin-left: auto;
+            color: var(--m)
+        }
+        
+        .tg {
+            width: 46px;
+            height: 26px;
+            border-radius: 13px;
+            background: #344;
+            position: relative;
+            margin-left: auto
+        }
+        
+        .tg:after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            transition: .2s
+        }
+        
+        .tg.on {
+            background: var(--g)
+        }
+        
+        .tg.on:after {
+            left: 23px
+        }
+        
+        .nv {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            background: #08171d;
+            border-top: 1px solid var(--line);
+            padding: 8px 0 calc(8px + env(safe-area-inset-bottom))
+        }
+        
+        .nv button {
+            flex: 1;
+            background: none;
+            border: 0;
+            color: var(--m);
+            font-size: 10.5px;
+            position: relative
+        }
+        
+        .nv b {
+            display: block;
+            font-size: 21px;
+            font-weight: 400
+        }
+        
+        .nv .on {
+            color: var(--g)
+        }
+        
+        .nv em {
+            position: absolute;
+            top: -3px;
+            left: 56%;
+            background: var(--g);
+            color: #04210f;
+            border-radius: 9px;
+            font: 700 10px/15px system-ui;
+            min-width: 15px;
+            font-style: normal
+        }
+        
+        .emp {
+            text-align: center;
+            padding: 70px 20px;
+            color: var(--m)
+        }
+        
+        .emp b {
+            display: block;
+            font-size: 60px
+        }
+        
+        .od {
+            padding: 14px;
+            margin-bottom: 12px;
+            line-height: 1.55
+        }
+        
+        .od .s {
+            float: right;
+            color: #f5b942;
+            font-weight: 600
+        }
+        
+        #sh .bg {
+            position: fixed;
+            inset: 0;
+            background: #000a;
+            z-index: 5
+        }
+        
+        #sh .box {
+            position: fixed;
+            z-index: 6;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            padding: 18px;
+            border-radius: 20px 20px 0 0;
+            background: #0d222b;
+            line-height: 1.6
+        }
+        
+        #ts {
+            position: fixed;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #12361f;
+            border: 1px solid var(--g);
+            padding: 10px 18px;
+            border-radius: 20px;
+            z-index: 9;
+            display: none
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+    <div id="sh"></div>
+    <div id="ts"></div>
+    <nav class="nv" id="nv"></nav>
+    <script>
+        const tg = window.Telegram && Telegram.WebApp;
+        try {
+            tg && (tg.ready(), tg.expand())
+        } catch (x) {}
+        const $ = s => document.querySelector(s);
+        const e = s => String(s).replace(/[&<>"']/g, c => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[c]));
+        const m = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
+        const CATS = [
+            ["Mevalar", "🍎"],
+            ["Sabzavotlar", "🥕"],
+            ["Kartoshka & Ko'katlar", "🥔"],
+            ["Go'sht mahsulotlari", "🥩"],
+            ["Sut mahsulotlari", "🥛"],
+            ["Non mahsulotlari", "🍞"],
+            ["Shirinliklar", "🍫"],
+            ["Ichimliklar", "🥤"]
+        ];
+        // [kategoriyalar, nom, birlik, narx, emoji, guruh]
+        let P = [];
+        const PAY = [
+            ["💵", "Naqd (yetkazib berishda)"],
+            ["💳", "Karta orqali"]
+        ];
+        const SLOTS = ["Bugun 16:00 - 18:00", "Bugun 18:00 - 20:00", "Ertaga 10:00 - 12:00", "Ertaga 12:00 - 14:00"];
+        const ld = (k, d) => {
+            try {
+                const v = JSON.parse(localStorage.getItem(k));
+                return v == null ? d : v
+            } catch (x) {
+                return d
+            }
+        };
+        const sv = () => {
+            try {
+                const d = {
+                    cart,
+                    orders,
+                    favs,
+                    notif,
+                    addr: A,
+                    phone: PH,
+                    cartid: Object.fromEntries(Object.keys(cart).filter(i => P[i] && P[i][6]).map(i => [P[i][6], cart[i]])),
+                    favid: favs.filter(i => P[i] && P[i][6]).map(i => P[i][6])
+                };
+                for (const k in d) localStorage.setItem(k, JSON.stringify(d[k]))
+            } catch (x) {}
+        };
+        let cart = ld("cart", {}),
+            orders = ld("orders", []),
+            favs = ld("favs", []),
+            notif = ld("notif", true),
+            A = ld("addr", ""),
+            PH = ld("phone", "");
+        let S = {
+            scr: "home",
+            hist: [],
+            cat: 0,
+            g: 0,
+            q: "",
+            pay: 0,
+            slot: 0
+        };
+        const cnt = () => Object.values(cart).reduce((a, b) => a + b, 0);
+        const tot = () => Object.keys(cart).reduce((a, i) => a + P[i][3] * cart[i], 0);
+        const U = () => {
+            const u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+            return u ? {
+                n: u.first_name || "Mehmon",
+                u: u.username ? "@" + u.username : "",
+                id: u.id
+            } : {
+                n: "Mehmon",
+                u: "@guest",
+                id: "-"
+            }
+        };
+
+        function toast(t) {
+            const o = $("#ts");
+            o.textContent = t;
+            o.style.display = "block";
+            clearTimeout(toast.t);
+            toast.t = setTimeout(() => o.style.display = "none", 1600)
+        }
+
+        function sheet(t, h) {
+            $("#sh").innerHTML = `<div class="bg" onclick="$('#sh').innerHTML=''"></div><div class="box"><b style="font-size:17px">${t}</b><div style="margin:10px 0">${h}</div><button class="btn c" onclick="$('#sh').innerHTML=''">Yopish</button></div>`
+        }
+        const bar = (t, back, right) => `<div class="bar">${back?'<button class="bk" onclick="back()">←</button>':""}<span>${t}</span><span class="sp"></span>${right||""}</div>`;
+        const productPicture = p => p[7] ? `<img src="${e(p[7])}" alt="${e(p[1])}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:12px">` : "📷";
+        const row = i => {
+                const p = P[i],
+                    q = cart[i] || 0;
+                return `<div class="row card"><div class="pic">${productPicture(p)}</div><div class="inf"><b>${p[1]}</b><small>${p[2]}</small><span>${m(p[3])}</span></div><button class="fv" onclick="fav(${i})">${favs.includes(i)?"❤️":"🤍"}</button><button class="add" onclick="add(${i})">+${q?`<i>${q}</i>`:""}</button></div>`};
+const V={
+home(){return `<div class="bar"><div class="logo">🌿</div><span>FreshMarket</span></div>
+<div class="hero"><h2>Siz uchun eng sifatli mahsulotlar!</h2><div class="em">🍅🥕🍎<br>🍇🥦🍋🍊</div></div>
+<div class="ft"><div><b>🚚</b>Tez yetkazib berish</div><div><b>🛡</b>Sifat kafolati</div><div><b>💳</b>Xavfsiz to'lov</div><div><b>🎧</b>24/7 qo'llab-quvvatlash</div></div>
+<div class="card wl"><b>🌿 FreshMarket</b> botiga xush kelibsiz!<br>Bu yerda siz meva, sabzavot, go'sht, sut mahsulotlari va boshqa oziq-ovqat mahsulotlarini buyurtma qilishingiz mumkin.</div>
+<button class="btn" onclick="tab('cats')"><span>🗂 Kategoriyalar</span><span>→</span></button>
+<div class="card sr">🔍<input id="q0" placeholder="Qidiruv..." onkeydown="if(event.key=='Enter')srch(this.value)"><button class="fv" onclick="srch($('#q0').value)">➜</button></div>`},
+cats(){return bar("Kategoriyalar",0)+(P.length?`<div class="grid">${CATS.map((c,k)=>`<div class="card cat" onclick="openCat(${k})"><div class="im">${c[1]}</div><b>${c[0]}</b><small>(${P.filter(p=>p[0].includes(k)).length})</small></div>`).join("")}</div>`:`<div class="emp"><b>🛍</b>Mahsulotlar admin paneldan qo'shiladi</div>`)},
+list(){const L=P.map((p,i)=>i).filter(i=>P[i][0].includes(S.cat)),G=["Barchasi",...new Set(L.map(i=>P[i][5]))],g=G[S.g]||"Barchasi";
+return bar(CATS[S.cat][0],1)+`<div class="chips">${G.map((x,k)=>`<button class="chip ${k==S.g?"on":""}" onclick="grp(${k})">${x}</button>`).join("")}</div>`+L.filter(i=>g=="Barchasi"||P[i][5]==g).map(row).join("")},
+search(){return bar("Qidiruv",1)+`<div class="card sr">🔍<input id="q1" value="${e(S.q)}" placeholder="Mahsulot nomi..." oninput="S.q=this.value;$('#res').innerHTML=sres()"></div><div style="height:12px"></div><div id="res">${sres()}</div>`},
+cart(){const k=Object.keys(cart);if(!k.length)return bar("Savatcha",0)+`<div class="emp"><b>🛒</b>Savatcha bo'sh<button class="btn c" onclick="tab('cats')">Xarid qilish</button></div>`;
+return bar("Savatcha",0,`<button class="bk" style="background:none;border:0;font-size:20px" onclick="clr()">🗑</button>`)+k.map(i=>`<div class="row card"><div class="pic">${productPicture(P[i])}</div><div class="inf"><b>${P[i][1]}</b><small>${P[i][2]} · ${m(P[i][3])}</small></div><div class="st"><button onclick="chg(${i},-1)">−</button><span>${cart[i]}</span><button onclick="chg(${i},1)">+</button></div></div>`).join("")+`<div class="tot"><span>Jami:</span><b>${m(tot())}</b></div><button class="btn c" onclick="go('pay')">Buyurtma berish</button>`},
+pay(){return bar("Buyurtma berish",1)+`<div class="h3">Telefon raqam <span style="color:#e53935">*</span></div><div class="card">📞<input class="inp" id="phone" type="tel" inputmode="tel" autocomplete="tel" style="width:88%" placeholder="+998 90 123 45 67" value="${e(PH)}"></div>
+<div class="h3">Yetkazib berish manzili</div><div class="addr-search"><div class="card">📍<input class="inp" id="addr" style="width:88%" placeholder="Samarqand manzilini yozing" autocomplete="street-address" oninput="searchAddresses(this.value)" value="${e(A)}"></div><div id="addr-results" class="addr-results" role="listbox"></div></div><small class="address-credit">Manzil qidiruvi: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>. Topilmasa, manzilni qo'lda yozing.</small>
+<div class="h3">To'lov usuli</div><div class="card">${PAY.map((p,k)=>`<div class="opt ${k==S.pay?"on":""}" onclick="S.pay=${k};A=$('#addr').value;PH=$('#phone').value;render()"><div class="rd"></div><span>${p[0]}</span>${p[1]}</div>`).join("")}</div>
+<div class="h3">Buyurtma vaqti</div><div class="card opt" onclick="S.slot=(S.slot+1)%4;A=$('#addr').value;PH=$('#phone').value;render()">${SLOTS[S.slot]}<span style="margin-left:auto;color:var(--g)">O'zgartirish</span></div>
+<div class="tot"><span>Jami:</span><b>${m(tot())}</b></div><button class="btn c" onclick="confirmO()">Buyurtmani tasdiqlash</button>`},
+orders(){return bar("Buyurtmalarim",0)+(orders.length?orders.map(o=>`<div class="card od"><b>#${o.id}</b> <span class="s">🟡 ${o.st}</span><br><small style="color:var(--m)">${e(o.d)}</small><br>${o.items.map(i=>`${e(i.n)} × ${i.q}`).join(", ")}<br>📍 ${e(o.addr)}<br>💰 <b style="color:var(--g)">${m(o.total)}</b></div>`).join(""):`<div class="emp"><b>📦</b>Hozircha buyurtmalar yo'q</div>`)},
+profile(){const u=U(),pts=orders.reduce((a,o)=>a+Math.floor(o.total/10000),0);
+const M=[["👤","Shaxsiy ma'lumotlar","info()"],["📍","Manzillarim","addrs()"],["💳","To'lov usullari","pays()"],["🔔","Bildirishnomalar","nt()",1],["❓","Yordam","help()"],["↪️","Chiqish","quit()"]];
+return bar("Profil",0)+`<div class="card pf"><div class="av">🌿</div><div><b style="font-size:18px">${e(u.n)}</b><br><small style="color:var(--m)">${e(u.u)}</small><br><span class="prem">👑 Premium</span></div></div>
+<div class="card sts"><div><b>${orders.length}</b><small>Buyurtmalar</small></div><div><b>${favs.length}</b><small>Sevimlilar</small></div><div><b>${pts}</b><small>Ballar</small></div></div>
+<div class="card" style="margin-top:12px">${M.map(x=>`<div class="mi" onclick="${x[2]}"><span>${x[0]}</span>${x[1]}${x[3]?`<div class="tg ${notif?"on":""}"></div>`:'<span class="a">›</span>'}</div>`).join("")}</div>
+<div class="hero" style="height:110px;margin-top:12px"><h2 style="font-size:19px;top:30px;width:60%">Sizning ishonchingiz biz uchun muhim!</h2><div class="em" style="font-size:38px">🥦🍅🥕</div></div>`}};
+function sres(){const q=S.q.trim().toLowerCase();if(!q)return `<div class="emp"><b>🔍</b>Mahsulot nomini yozing</div>`;const L=P.map((p,i)=>i).filter(i=>P[i][1].toLowerCase().includes(q)||P[i][5].toLowerCase().includes(q));return L.length?L.map(row).join(""):`<div class="emp"><b>😕</b>Hech narsa topilmadi</div>`}
+function render(top){$("#app").innerHTML=V[S.scr]();const T={home:"home",cats:"cats",list:"cats",search:"cats",cart:"cart",pay:"cart",orders:"orders",profile:"profile"}[S.scr];
+$("#nv").innerHTML=[["home","🏠","Bosh sahifa"],["cats","🗂","Kategoriyalar"],["cart","🛒","Savatcha"],["orders","📦","Buyurtmalar"],["profile","👤","Profil"]].map(t=>`<button class="${t[0]==T?"on":""}" onclick="tab('${t[0]}')"><b>${t[1]}</b>${t[2]}${t[0]=="cart"&&cnt()?`<em>${cnt()}</em>`:""}</button>`).join("");if(top)scrollTo(0,0)}
+function tab(t){S.hist=[];S.scr=t;render(1)}
+function go(s){S.hist.push(S.scr);S.scr=s;render(1)}
+function back(){S.scr=S.hist.pop()||"home";render(1)}
+function openCat(k){S.cat=k;S.g=0;go("list")}
+function grp(k){S.g=k;render()}
+function srch(v){S.q=v||"";go("search")}
+function add(i){cart[i]=(cart[i]||0)+1;sv();toast("🛒 "+P[i][1]+" qo'shildi");render()}
+function chg(i,d){cart[i]=(cart[i]||0)+d;if(cart[i]<=0)delete cart[i];sv();render()}
+function clr(){cart={};sv();toast("Savatcha tozalandi");render()}
+function fav(i){const k=favs.indexOf(i);k<0?favs.push(i):favs.splice(k,1);sv();render()}
+function nt(){notif=!notif;sv();render()}
+function info(){const u=U();sheet("Shaxsiy ma'lumotlar",`Ism: <b>${e(u.n)}</b><br>Username: ${e(u.u)||"—"}<br>ID: ${e(u.id)}`)}
+function addrs(){sheet("Manzillarim",A?`📍 ${e(A)}`:"Hali manzil saqlanmagan. Birinchi buyurtmada kiritilgan manzil shu yerda saqlanadi.")}
+function pays(){sheet("To'lov usullari",PAY.map(p=>p[0]+" "+p[1]).join("<br>"))}
+function help(){sheet("Yordam","Savol yoki muammo bo'lsa, botga xabar yozing — do'kon administratori 24/7 javob beradi.")}
+function quit(){tg&&tg.initData?tg.close():toast("Telegram ichida yopiladi")}
+function normPh(s){let d=String(s||"").replace(/\D/g,"");if(d.length==9)d="998"+d;return /^998\d{9}$/.test(d)?"+"+d:""}
+async function confirmO(){const a=$("#addr").value.trim(),ph=normPh($("#phone").value);if(!ph){toast("📞 Telefon raqamini to'g'ri kiriting (+998 XX XXX XX XX)");$("#phone").focus();return}if(!a){toast("📍 Manzilni kiriting");return}
+const button=document.querySelector("#app .btn.c");if(button&&button.disabled)return;if(button){button.disabled=true;button.textContent="Yuborilmoqda..."}
+const payload={items:Object.keys(cart).map(i=>({id:P[i][6],q:cart[i],p:P[i][3]})),addr:a,phone:ph,pay:PAY[S.pay][1],slot:SLOTS[S.slot],name:U().n};
+const headers={"Content-Type":"application/json"};if(tg&&tg.initData)headers["X-Telegram-Init-Data"]=tg.initData;
+try{const response=await fetch(API+"/api/order",{method:"POST",headers,body:JSON.stringify(payload)});let result={};try{result=await response.json()}catch(x){}if(!response.ok)throw new Error(result.error||"Buyurtma yuborilmadi. Qayta urinib ko'ring.");
+const order={id:result.order_id,d:new Date().toLocaleString("uz"),items:result.items,total:result.total,addr:a,phone:ph,pay:payload.pay,slot:payload.slot,st:"Jarayonda"};A=a;PH=ph;orders.unshift(order);cart={};sv();tab("orders");toast(`✅ Buyurtma #${order.id} qabul qilindi`)}catch(x){toast(x.message||"Buyurtma yuborilmadi. Qayta urinib ko'ring.")}finally{if(button&&button.isConnected){button.disabled=false;button.textContent="Buyurtmani tasdiqlash"}}}
+const API=new URLSearchParams(location.search).get("api")||"";
+let addressTimer=0,addressController=null,addressResults=[];
+function selectAddress(i){const input=$("#addr");if(!input||!addressResults[i])return;input.value=addressResults[i].label;A=input.value;const box=$("#addr-results");box.classList.remove("open");box.innerHTML=""}
+function searchAddresses(value){clearTimeout(addressTimer);if(addressController)addressController.abort();const box=$("#addr-results"),query=String(value||"").trim();if(!box)return;if(query.length<3){box.classList.remove("open");box.innerHTML="";return}box.innerHTML='<div class="addr-empty">Manzillar qidirilmoqda...</div>';box.classList.add("open");addressTimer=setTimeout(async()=>{addressController=new AbortController();try{const response=await fetch(API+"/api/addresses?q="+encodeURIComponent(query),{signal:addressController.signal,cache:"no-store"});if(!response.ok)throw new Error();addressResults=await response.json();box.innerHTML=addressResults.length?addressResults.map((item,i)=>`<button type="button" role="option" onclick="selectAddress(${i})">${e(item.label)}</button>`).join(""):'<div class="addr-empty">Manzil topilmadi. To\'liq manzilni qo\'lda yozing.</div>'}catch(x){if(x.name!=="AbortError")box.innerHTML='<div class="addr-empty">Manzilni qo\'lda yozishingiz mumkin.</div>'}},450)}
+let _last="";async function loadCatalog(){try{const r=await fetch(API+"/api/products",{cache:"no-store"});if(!r.ok)throw 0;const L=await r.json();const j=JSON.stringify(L);if(j===_last)return;_last=j;if(!L.length)throw 0;
+if(!L.length){P=[];cart={};favs=[];sv();render();return}const oc=ld("cartid",{}),of=ld("favid",[]);P=L.map(x=>[String(x.cat),x.name,x.unit,x.price,x.emoji,x.group,x.id,x.image]);cart={};favs=[];
+P.forEach((p,i)=>{if(oc[p[6]])cart[i]=oc[p[6]];if(of.includes(p[6]))favs.push(i)});sv();render()}catch(x){}}
+render(1);loadCatalog();setInterval(loadCatalog,5000);
+    </script>
+</body>
+
+</html>

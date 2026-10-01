@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.db
+*.sqlite*
+uploads/
+*.bak
+.shopbot.lock
+data/
+*.zip

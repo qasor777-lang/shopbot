@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <title>Admin panel</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+         :root {
+            --bg: #f4f6f8;
+            --c: #fff;
+            --t: #1b1f24;
+            --m: #7a828c;
+            --a: #16a34a;
+            --r: #e5484d;
+            --b: #e6e9ed
+        }
+        
+        @media(prefers-color-scheme:dark) {
+             :root {
+                --bg: #0f1316;
+                --c: #181e23;
+                --t: #eef1f4;
+                --m: #8b95a0;
+                --b: #262e35
+            }
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent
+        }
+        
+        body {
+            font: 15px system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--t);
+            padding: 12px 12px 90px
+        }
+        
+        h1 {
+            font-size: 20px;
+            margin: 4px 0 12px
+        }
+        
+        .g {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px
+        }
+        
+        .k {
+            background: var(--c);
+            border-radius: 14px;
+            padding: 12px;
+            border: 1px solid var(--b)
+        }
+        
+        .k b {
+            display: block;
+            font-size: 20px;
+            margin-top: 2px
+        }
+        
+        .k small,
+        .m {
+            color: var(--m);
+            font-size: 12px
+        }
+        
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--c);
+            border: 1px solid var(--b);
+            border-radius: 14px;
+            padding: 10px 12px;
+            margin-top: 8px
+        }
+        
+        .row .e {
+            font-size: 26px
+        }
+        
+        .row .i {
+            flex: 1;
+            min-width: 0
+        }
+        
+        .row .n {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+        
+        .off {
+            opacity: .45
+        }
+        
+        .tag {
+            background: var(--r);
+            color: #fff;
+            border-radius: 6px;
+            font-size: 10px;
+            padding: 1px 5px;
+            margin-left: 4px
+        }
+        
+        .tabs {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            background: var(--c);
+            border-top: 1px solid var(--b);
+            padding-bottom: env(safe-area-inset-bottom)
+        }
+        
+        .tabs button {
+            flex: 1;
+            border: 0;
+            background: none;
+            color: var(--m);
+            padding: 11px 0;
+            font-size: 12px
+        }
+        
+        .tabs button.on {
+            color: var(--a);
+            font-weight: 700
+        }
+        
+        .tabs span {
+            display: block;
+            font-size: 20px
+        }
+        
+        .btn {
+            border: 0;
+            border-radius: 12px;
+            padding: 11px 14px;
+            background: var(--a);
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px
+        }
+        
+        .btn.r {
+            background: var(--r)
+        }
+        
+        .btn.s {
+            background: var(--b);
+            color: var(--t)
+        }
+        
+        .fab {
+            position: fixed;
+            right: 16px;
+            bottom: 78px;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            font-size: 28px;
+            padding: 0;
+            box-shadow: 0 4px 14px #0004
+        }
+        
+        input,
+        select {
+            width: 100%;
+            padding: 11px;
+            border-radius: 10px;
+            border: 1px solid var(--b);
+            background: var(--bg);
+            color: var(--t);
+            font-size: 15px;
+            margin: 4px 0 8px
+        }
+        
+        .upload-card {
+            position: relative;
+            display: grid;
+            justify-items: center;
+            align-content: center;
+            gap: 8px;
+            min-height: 150px;
+            margin: 6px 0 12px;
+            padding: 12px;
+            overflow: hidden;
+            border: 1px dashed var(--a);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--t);
+            text-align: center;
+            cursor: pointer
+        }
+        
+        .upload-card.has-image {
+            padding: 0;
+            gap: 0
+        }
+        
+        .upload-card img {
+            display: block;
+            width: 100%;
+            height: 150px;
+            object-fit: contain
+        }
+        
+        .upload-card .upload-icon {
+            font-size: 30px
+        }
+        
+        .upload-card .upload-hint {
+            display: grid;
+            gap: 4px;
+            font-weight: 600
+        }
+        
+        .upload-card small {
+            color: var(--m);
+            font-weight: 400
+        }
+        
+        .upload-card input[type="file"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            opacity: 0;
+            cursor: pointer
+        }
+        
+        .sh {
+            position: fixed;
+            inset: 0;
+            background: #0007;
+            display: none;
+            align-items: flex-end;
+            z-index: 9
+        }
+        
+        .sh.on {
+            display: flex
+        }
+        
+        .sh>div {
+            background: var(--c);
+            width: 100%;
+            border-radius: 20px 20px 0 0;
+            padding: 16px;
+            max-height: 92vh;
+            overflow: auto
+        }
+        
+        .fl {
+            display: flex;
+            gap: 6px;
+            overflow: auto;
+            margin-bottom: 6px
+        }
+        
+        .fl button {
+            white-space: nowrap;
+            border: 1px solid var(--b);
+            background: var(--c);
+            color: var(--t);
+            border-radius: 20px;
+            padding: 6px 12px
+        }
+        
+        .fl .on {
+            background: var(--a);
+            color: #fff;
+            border-color: var(--a)
+        }
+        
+        .st {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 8px;
+            background: var(--b)
+        }
+    </style>
+</head>
+
+<body>
+    <div id="v"></div>
+    <div class="tabs" id="tb"></div>
+    <div class="sh" id="sh">
+        <div id="f"></div>
+    </div>
+    <script>
+        const tg = window.Telegram && window.Telegram.WebApp;
+        const localMode = /(localhost|127\.0\.0\.1)/.test(location.hostname) || new URLSearchParams(location.search).get("local") === "1";
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+        const $ = s => document.getElementById(s);
+        let D = null,
+            tab = "home",
+            cf = -1,
+            of = "all",
+            busy = 0;
+        const E = s => String(s || "").replace(/[&<>"]/g, c => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;"
+        }[c]));
+        const M = n => Number(n || 0).toLocaleString("ru-RU").replace(/,/g, " ") + " so'm";
+        const ST = {
+            p: ["🟡", "Jarayonda"],
+            d: ["🟢", "Yetkazilgan"],
+            c: ["🔴", "Bekor"]
+        };
+        async function api(p, b) {
+            const headers = {
+                "Content-Type": "application/json"
+            };
+            if (!localMode && tg && tg.initData) headers["X-Init-Data"] = tg.initData;
+            const r = await fetch("/admin/api/" + p, {
+                method: b ? "POST" : "GET",
+                headers,
+                body: b ? JSON.stringify(b) : undefined
+            });
+            if (!r.ok) {
+                const msg = await r.text();
+                throw new Error(r.status == 403 ? (localMode ? "Lokal admin rejimi yoqilgan, lekin ADMIN_ID to'g'ri o'rnatilmagan.\n\n.env faylga ADMIN_ID ni kiriting." : "Ruxsat yo'q (faqat admin)") : msg || "So'rov xatosi");
+            }
+            return r.json()
+        }
+        async function load() {
+            if (busy) return;
+            try {
+                D = await api("data");
+                draw()
+            } catch (e) {
+                $("v").innerHTML = '<p class="k">⚠️ ' + E(e.message) + '</p>'
+            }
+        }
+
+        function draw() {
+            if (!D) return;
+            $("tb").innerHTML = [
+                ["home", "📊", "Bosh"],
+                ["prod", "🛍", "Mahsulot"],
+                ["ord", "📦", "Buyurtma"]
+            ].map(t => `<button class="${tab==t[0]?"on":""}" onclick="tab='${t[0]}';draw()"><span>${t[1]}</span>${t[2]}</button>`).join("");
+            $("v").innerHTML = tab == "home" ? home() : tab == "prod" ? prod() : ord()
+        }
+
+        function home() {
+            const s = D.stats;
+            return `<h1>🛠 Admin panel</h1><div class="g"><div class="k"><small>Yangi buyurtma</small><b>${s.new}</b></div><div class="k"><small>Jami buyurtma</small><b>${s.orders}</b></div><div class="k"><small>Savdo</small><b style="font-size:16px">${M(s.sum)}</b></div><div class="k"><small>Mijozlar</small><b>${s.users}</b></div></div><p class="m" style="margin-top:12px">Bu yerda qilingan o'zgarishlar do'kon botida va saytda 5 soniya ichida ko'rinadi.</p>`
+        }
+
+        function prod() {
+            const L = D.products.filter(p => cf < 0 || p.cat == cf);
+            return `<h1>🛍 Mahsulotlar</h1><div class="fl"><button class="${cf<0?"on":""}" onclick="cf=-1;draw()">Hammasi</button>${D.cats.map((c,i)=>`<button class="${cf==i?"on":""}" onclick="cf=${i};draw()">${c[1]} ${E(c[0])}</button>`).join("")}</div>`+(L.map(p=>`<div class="row ${p.active?"":"off"}" onclick="edit(${p.id})"><div class="e">${p.image?`<img src="${E(p.image)}" alt="" style="width:42px;height:42px;object-fit:cover;border-radius:6px">`:'📷'}</div><div class="i"><div class="n">${E(p.name)}${p.active?"":'<span class="tag">yashirin</span>'}</div><div class="m">${M(p.price)}${p.old_price>p.price?" <s>"+M(p.old_price)+"</s>":""}</div></div></div>`).join("")||'<p class="m">Admin paneldan yangi mahsulot qo\'shing</p>')+`<button class="btn fab" onclick="edit(0)">+</button>`}
+function ord(){const L=D.orders.filter(o=>of=="all"||o.status==of);return`<h1>📦 Buyurtmalar</h1><div class="fl">${[["all","Hammasi"],["p","🟡 Jarayonda"],["d","🟢 Yetkazilgan"],["c","🔴 Bekor"]].map(f=>`<button class="${of==f[0]?"on":""}" onclick="of='${f[0]}';draw()">${f[1]}</button>`).join("")}</div>`+(L.map(o=>`<div class="k" style="margin-top:8px"><div style="display:flex;justify-content:space-between"><b style="font-size:16px">#${o.id}</b><span class="st">${ST[o.status][0]} ${ST[o.status][1]}</span></div><div class="m">${E(o.uname||o.user_id)}${o.username?" @"+E(o.username):""} · ${E(o.created)}</div><div style="margin:6px 0">${o.items.map(i=>`${E(i.name)} × ${i.qty}`).join("<br>")}</div>${o.phone?`<div class="m">📞 <a href="tel:${E(o.phone)}" style="color:inherit">${E(o.phone)}</a></div>`:""}${o.note?`<div class="m">📝 ${E(o.note)}</div>`:""}<b>${M(o.total)}</b><div style="display:flex;gap:8px;margin-top:8px"><button class="btn s" onclick="setS(${o.id},'p')">🟡</button><button class="btn" onclick="setS(${o.id},'d')">🟢 Yetkazildi</button><button class="btn r" onclick="setS(${o.id},'c')">🔴</button></div></div>`).join("")||'<p class="m">Buyurtma yo\'q</p>')}
+async function setS(id,s){try{await api("order",{id,status:s});await load()}catch(e){tg.showAlert(e.message)}}
+function edit(id){const p=D.products.find(x=>x.id==id)||{id:0,name:"",emoji:"📦",image:"",price:"",old_price:"",cat:cf<0?0:cf,active:1};busy=1;
+ $("f").innerHTML=`<h1>${id?"Tahrirlash":"Yangi mahsulot"}</h1><small class="m">Mahsulot nomi va o'lchami</small><input id="n" value="${E(p.name)}"><small class="m">Mahsulot rasmi</small><label id="ip" class="upload-card ${p.image?"has-image":""}"><div id="ip-preview">${p.image?`<img src="${E(p.image)}" alt="${E(p.name)}">`:'<span class="upload-icon">📷</span>'}</div><span id="ip-hint" class="upload-hint">${p.image?"Rasmni almashtirish":"Rasm tanlang"}<small>PNG, JPG yoki WebP · 2 MB gacha</small></span><input id="image" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewProductImage()"></label><small class="m">Narx (so'm)</small><input id="p" type="number" inputmode="numeric" value="${p.price}"><small class="m">Eski narx (aksiya uchun, ixtiyoriy)</small><input id="o" type="number" inputmode="numeric" value="${p.old_price||""}"><small class="m">Bo'lim</small><select id="c">${D.cats.map((c,i)=>`<option value="${i}" ${i==p.cat?"selected":""}>${c[1]} ${E(c[0])}</option>`).join("")}</select><label><input id="a" type="checkbox" style="width:auto" ${p.active?"checked":""}> Do'konda ko'rinsin</label><div style="display:flex;gap:8px;margin-top:12px"><button class="btn s" onclick="cl()">Yopish</button>${id?`<button class="btn r" onclick="del(${id})">O'chirish</button>`:""}<button class="btn" style="flex:1" onclick="sv(${id})">Saqlash</button></div>`;$("sh").classList.add("on")}
+function edit(id) {
+    const p = D.products.find(x => x.id == id) || { id: 0, name: "", image: "", price: "", old_price: "", cat: cf < 0 ? 0 : cf, active: 1 };
+    busy = 1;
+    $("f").innerHTML = `
+        <h1>${id ? "Tahrirlash" : "Yangi mahsulot"}</h1>
+        <small class="m">Mahsulot nomi va o'lchami</small>
+        <input id="n" value="${E(p.name)}">
+        <small class="m">Mahsulot rasmi</small>
+        <label id="ip" class="upload-card ${p.image ? "has-image" : ""}">
+            <div id="ip-preview">${p.image ? `<img src="${E(p.image)}" alt="${E(p.name)}">` : '<span class="upload-icon">📷</span>'}</div>
+            <span id="ip-hint" class="upload-hint">${p.image ? "Rasmni almashtirish" : "Rasm tanlang"}<small>PNG, JPG yoki WebP, 2 MB gacha</small></span>
+            <input id="image" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewProductImage()">
+        </label>
+        <small class="m">Narx (so'm)</small><input id="p" type="number" inputmode="numeric" value="${p.price}">
+        <small class="m">Eski narx (aksiya uchun, ixtiyoriy)</small><input id="o" type="number" inputmode="numeric" value="${p.old_price || ""}">
+        <small class="m">Bo'lim</small>
+        <select id="c">${D.cats.map((c, i) => `<option value="${i}" ${i == p.cat ? "selected" : ""}>${c[1]} ${E(c[0])}</option>`).join("")}</select>
+        <label><input id="a" type="checkbox" style="width:auto" ${p.active ? "checked" : ""}> Do'konda ko'rinsin</label>
+        <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn s" onclick="cl()">Yopish</button>
+            ${id ? `<button class="btn r" onclick="del(${id})">O'chirish</button>` : ""}
+            <button class="btn" style="flex:1" onclick="sv(${id})">Saqlash</button>
+        </div>`;
+    $("sh").classList.add("on");
+}
+
+function cl(){busy=0;$("sh").classList.remove("on")}
+function previewProductImage(){const file=$("image").files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{$("ip").classList.add("has-image");$("ip-preview").innerHTML=`<img src="${reader.result}" alt="Ko'rib chiqish">`;$("ip-hint").childNodes[0].textContent="Rasmni almashtirish"};reader.readAsDataURL(file)}
+function readProductImage(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file)})}
+async function sv(id){try{const file=$("image").files[0];if(file&&file.size>2*1024*1024)throw new Error("Rasm 2 MB dan kichik bo'lishi kerak");const image=file?await readProductImage(file):"";await api("product",{id,name:$("n").value,price:$("p").value,old_price:$("o").value||0,cat:$("c").value,active:$("a").checked?1:0,image});cl();await load();tg.HapticFeedback?.notificationOccurred("success")}catch(e){tg.showAlert(e.message)}}
+function del(id){tg.showConfirm("O'chirilsinmi?",async y=>{if(y){await api("delete",{id});cl();load()}})}
+load();setInterval(load,8000);
+    </script>
+</body>
+
+</html>

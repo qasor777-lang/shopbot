@@ -1,0 +1,24 @@
+services:
+  shopbot:
+    build: .
+    container_name: shopbot
+    restart: always
+    env_file: .env
+    environment:
+      # Baza va rasm fayllar ./data papkada saqlanadi — konteyner qayta qurilsa ham yo'qolmaydi.
+      PORT: "8080"
+      SHOP_DB_PATH: /data/shop.db
+      SHOP_UPLOAD_DIR: /data/uploads
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+
+  # Bepul HTTPS manzil beradi (trycloudflare). Doimiy manzil uchun nomlangan tunnel kerak.
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: shopbot-tunnel
+    restart: always
+    command: tunnel --no-autoupdate --url http://shopbot:8080
+    depends_on:
+      - shopbot

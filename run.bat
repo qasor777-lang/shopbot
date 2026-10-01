@@ -1,0 +1,7 @@
+@echo off
+cd /d "%~dp0"
+if not exist venv python -m venv venv
+call venv\Scripts\activate.bat
+pip install -r requirements.txt -q
+python start_all.py
+pause
