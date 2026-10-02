@@ -195,12 +195,28 @@ def s_stat():
     return text, kb([])
 
 
+def group_id():
+    """Buyurtma xabarlari yuboriladigan guruh ID'si (/setgroup bilan o'rnatiladi)."""
+    r = run("SELECT val FROM settings WHERE key='group_id'", fetch="one")
+    try:
+        return int(r["val"]) if r else 0
+    except (TypeError, ValueError):
+        return 0
+
+
 async def notify_new_order(oid):
-    """Yangi buyurtma adminga to'g'ridan-to'g'ri keladi (to'liq ma'lumot + tugmalar)."""
-    if not (abot_inst and ADMIN_ID):
+    """Yangi buyurtma adminga va (o'rnatilgan bo'lsa) guruhga keladi (to'liq ma'lumot + tugmalar)."""
+    if not abot_inst:
+        return False
+    targets = [t for t in (ADMIN_ID, group_id()) if t]
+    if not targets:
         return False
     text, markup = s_order(oid)
-    await abot_inst.send_message(ADMIN_ID, "🆕 " + text, reply_markup=markup)
+    for t in targets:
+        try:
+            await abot_inst.send_message(t, "🆕 " + text, reply_markup=markup)
+        except Exception:
+            logging.exception("buyurtma xabari yuborilmadi: %s", t)
     return True
 
 
@@ -381,6 +397,13 @@ async def cb(c: CallbackQuery, state: FSMContext):
     elif act == "stat":
         await render(c, *s_stat())
     await c.answer()
+
+
+@ar.message(Command("setgroup"), F.chat.type.in_({"group", "supergroup"}))
+async def set_group(m: Message):
+    run("INSERT INTO settings(key,val) VALUES('group_id',?) "
+        "ON CONFLICT(key) DO UPDATE SET val=excluded.val", (str(m.chat.id),))
+    await m.answer("✅ Yangi buyurtma xabarlari endi shu guruhga yuboriladi.")
 
 
 @fb.message()

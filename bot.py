@@ -182,6 +182,8 @@ CREATE TABLE IF NOT EXISTS orders(
     phone TEXT DEFAULT '', customer_name TEXT DEFAULT '');
 CREATE TABLE IF NOT EXISTS order_items(
     order_id INTEGER, name TEXT, qty INTEGER, price INTEGER);
+CREATE TABLE IF NOT EXISTS settings(
+    key TEXT PRIMARY KEY, val TEXT);
 """
 
 
